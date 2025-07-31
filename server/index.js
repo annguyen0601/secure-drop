@@ -7,7 +7,9 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
-app.use(cors()); // Allow frontend to talk to backend
+app.use(cors({
+  exposedHeaders: ['X-Original-Filename'] // Allow client to read this custom header
+})); // Allow frontend to talk to backend
 
 // Setup directory to store uploaded files
 const uploadDir = path.join(__dirname, 'uploads');
@@ -16,7 +18,10 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
 // Configure multer to save files with random names
 const storage = multer.diskStorage({
   destination: uploadDir,
-  filename: (req, file, cb) => cb(null, uuidv4()) // random ID as filename
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, uuidv4() + ext); // random ID as filename with original extension
+  }
 });
 const upload = multer({ storage });
 
@@ -29,7 +34,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
   const expiresAt = Date.now() + 10 * 60 * 1000; // file expires in 10 minutes
 
   vault[id] = {
-    path: req.file.path,
+    path: req.file.path, // multer already saved with correct extension
     originalName: req.file.originalname,
     expiresAt
   };
@@ -42,18 +47,19 @@ app.get('/download/:id', (req, res) => {
   const { id } = req.params;
   const file = vault[id];
 
-  // Reject if file not found or expired
   if (!file || file.expiresAt < Date.now()) return res.sendStatus(404);
 
-  // Send file for download and delete after use
-  res.download(file.path, file.originalName, () => {
-    fs.unlink(file.path, () => { }); // delete from disk
-    delete vault[id];               // delete metadata
-  });
-});
+  // Send original filename in header
+  res.setHeader('X-Original-Filename', encodeURIComponent(file.originalName));
+  res.setHeader('Content-Disposition', `attachment; filename="${file.originalName}"`);
+  res.setHeader('Content-Type', 'application/octet-stream');
 
-app.get('/test-cors', (req, res) => {
-  res.json({ message: 'CORS test passed!' });
+  const stream = fs.createReadStream(file.path);
+  stream.pipe(res);
+  stream.on('close', () => {
+    fs.unlink(file.path, () => { });
+    delete vault[id];
+  });
 });
 
 app.listen(4000, () => {
