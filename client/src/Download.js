@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import "@picocss/pico/css/pico.min.css";
-import '@picocss/pico/css/pico.colors.css';
+
 
 function Download() {
   const { id } = useParams();
@@ -55,14 +54,14 @@ function Download() {
         const url = URL.createObjectURL(downloadBlob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = originalName; // ✅ Use actual filename
+        a.download = originalName; // Use actual filename
         // console.log(`Downloading: ${originalName}`);
         a.click();
         URL.revokeObjectURL(url);
-        setStatus('✅ File downloaded & decrypted!');
+        setStatus('File downloaded & decrypted!');
       } catch (err) {
         console.error(err);
-        setStatus('❌ Failed to decrypt or download file.');
+        setStatus('Failed to decrypt or download file.');
       }
     }
 
@@ -79,7 +78,7 @@ function Download() {
               href="/"
               style={{ fontWeight: 'bold', fontSize: '1.2rem', textDecoration: 'none' }}
             >
-              🔐 SecureDrop
+              SecureDrop
             </a>
           </li>
         </ul>
@@ -90,7 +89,7 @@ function Download() {
         <article style={{ textAlign: 'center', maxWidth: '600px', width: '100%' }}>
           <header>
             <hgroup>
-              <h1>🔓 Secure Download</h1>
+              <h1>Secure Download</h1>
               <p>Decrypting and downloading your file...</p>
             </hgroup>
           </header>
@@ -99,22 +98,22 @@ function Download() {
             {status === 'Downloading...' && (
               <>
                 <div aria-busy="true" style={{ marginBottom: '1rem' }}></div>
-                <p>⏳ {status}</p>
+                <p>{status}</p>
                 <small>Please wait while we decrypt your file securely...</small>
               </>
             )}
 
-            {status === '✅ File downloaded & decrypted!' && (
+            {status === 'File downloaded & decrypted!' && (
               <div role="alert" style={{ color: 'var(--primary)' }}>
-                <h3>✅ Success!</h3>
+                <h3>Success!</h3>
                 <p>Your file has been downloaded and decrypted successfully.</p>
                 <small>The file will now appear in your downloads folder.</small>
               </div>
             )}
 
-            {status.includes('❌') && (
+            {status.includes('Failed') && (
               <div role="alert" style={{ color: 'var(--del-color)' }}>
-                <h3>❌ Download Failed</h3>
+                <h3>Download Failed</h3>
                 <p>Failed to decrypt or download the file.</p>
                 <details>
                   <summary>Possible reasons</summary>
@@ -127,7 +126,7 @@ function Download() {
                 </details>
                 <div style={{ marginTop: '2rem' }}>
                   <a href="/" role="button" className="secondary">
-                    🏠 Go Back to SecureDrop
+                    Go Back to SecureDrop
                   </a>
                 </div>
               </div>
@@ -136,7 +135,7 @@ function Download() {
 
           <footer style={{ marginTop: '3rem' }}>
             <small>
-              🔒 This download uses end-to-end encryption.
+              This download uses end-to-end encryption.
               The file was decrypted locally in your browser.
             </small>
           </footer>

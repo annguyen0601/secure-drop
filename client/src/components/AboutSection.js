@@ -2,13 +2,13 @@ export default function AboutSection() {
   return (
     <section id="about" className="container">
       <hgroup>
-        <h1>🛡️ About SecureDrop</h1>
+        <h1>About SecureDrop</h1>
         <p>End-to-end encrypted file sharing made simple</p>
       </hgroup>
 
       <div className="grid">
         <article>
-          <header>🔒 Security First</header>
+          <header>Security First</header>
           <p>
             Files are encrypted client-side using AES-GCM before upload.
             The encryption key never leaves your browser and is embedded in the share link.
@@ -16,7 +16,7 @@ export default function AboutSection() {
         </article>
 
         <article>
-          <header>⏰ Temporary Storage</header>
+          <header>Temporary Storage</header>
           <p>
             Files automatically expire after 10 minutes and are permanently deleted
             after the first download for maximum security.
@@ -24,7 +24,7 @@ export default function AboutSection() {
         </article>
 
         <article>
-          <header>🌐 Zero Knowledge</header>
+          <header>Zero Knowledge</header>
           <p>
             Our servers never see your unencrypted files. Even we can't access
             your data without the encryption key from your share link.

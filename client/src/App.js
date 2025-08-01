@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 
-import '@picocss/pico/css/pico.green.min.css';
-import '@picocss/pico/css/pico.green.css';
 import './App.css';
 
 import HeroSection from './components/HeroSection';
@@ -19,11 +17,6 @@ function App() {
     setTheme(newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
   };
-
-  useEffect(() => {
-    // Set initial theme
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
 
   async function handleUpload() {
     if (!file) return alert('Please select a file.');
@@ -45,9 +38,9 @@ function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div>
       <nav className="container-fluid">
-        <ul><li><a href="#home">🔐 SecureDrop</a></li></ul>
+        <ul><li><a href="#home">SecureDrop</a></li></ul>
         <ul>
           <li><a href="#about">About</a></li>
           <li>
@@ -56,7 +49,7 @@ function App() {
               className="secondary outline"
               aria-label="Toggle theme"
             >
-              {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
+              {theme === 'light' ? 'Dark' : 'Light'}
             </button>
           </li>
         </ul>
