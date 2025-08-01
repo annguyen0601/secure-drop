@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import './App.css';
@@ -10,12 +10,20 @@ import AboutSection from './components/AboutSection';
 function App() {
   const [file, setFile] = useState(null);
   const [link, setLink] = useState('');
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    // Get theme from localStorage or default to 'dark'
+    return localStorage.getItem('theme') || 'dark';
+  });
+
+  useEffect(() => {
+    // Set theme attribute and save to localStorage
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
   };
 
   async function handleUpload() {
@@ -44,13 +52,18 @@ function App() {
         <ul>
           <li><a href="#about">About</a></li>
           <li>
-            <button
-              onClick={toggleTheme}
-              className="secondary outline"
-              aria-label="Toggle theme"
-            >
-              {theme === 'light' ? 'Dark' : 'Light'}
-            </button>
+            <div className="theme-switcher">
+              <input
+                type="checkbox"
+                id="theme-toggle"
+                checked={theme === 'light'}
+                onChange={toggleTheme}
+                aria-label="Toggle theme"
+                style={{ display: 'none' }}
+              />
+              <label htmlFor="theme-toggle" className="slider round"></label>
+              {/* <span>{theme === 'light' ? 'Light' : 'Dark'}</span> */}
+            </div>
           </li>
         </ul>
       </nav>
