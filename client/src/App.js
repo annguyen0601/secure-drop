@@ -40,9 +40,9 @@ function App() {
     const form = new FormData();
     form.append('file', blob, file.name);
 
-    const res = await axios.post('http://localhost:4000/upload', form);
+    const res = await axios.post(`${process.env.SERVER}/upload`, form);
     const keyB64 = btoa(String.fromCharCode(...key));
-    setLink(`http://localhost:3000/download/${res.data.id}#${keyB64}`);
+    setLink(`${process.env.SERVER}/download/${res.data.id}#${keyB64}`);
   }
 
   return (
