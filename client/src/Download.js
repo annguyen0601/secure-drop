@@ -22,7 +22,7 @@ function Download() {
         );
 
         // 2. Download the encrypted file from backend
-        const res = await fetch(`${process.env.SERVER}/download/${id}`);
+        const res = await fetch(`${process.env.REACT_APP_SERVER}/download/${id}`);
         if (!res.ok) {
           throw new Error(`Failed to download file: ${res.status}`);
         }
