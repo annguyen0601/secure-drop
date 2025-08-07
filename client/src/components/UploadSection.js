@@ -1,4 +1,4 @@
-export default function UploadSection({ file, setFile, handleUpload, link }) {
+export default function UploadSection({ file, setFile, handleUpload, link, loading }) {
   return (
     <section id="upload" className="container" style={{ padding: '4rem 0' }}>
       <hgroup>
@@ -10,17 +10,25 @@ export default function UploadSection({ file, setFile, handleUpload, link }) {
         <div class="container">
           <header><h3>Choose File</h3></header>
           <input type="file" onChange={e => setFile(e.target.files[0])} />
-          <button
-            onClick={handleUpload}
-            disabled={!file}
-            className={file ? 'primary' : 'secondary'}
-          >
-            {file ? 'Encrypt & Upload' : 'Select a file first'}
-          </button>
+
+          {loading ? (
+            <div className="upload-status">
+              <p>Encrypting & Uploading...</p>
+              <div className="spinner"></div>
+            </div>
+          ) : (
+            <button
+              onClick={handleUpload}
+              disabled={!file}
+              className={file ? 'primary' : 'secondary'}
+            >
+              {file ? 'Encrypt & Upload' : 'Select a file first'}
+            </button>
+          )}
         </div>
 
-        {link && (
-          <details open style={{ marginTop: '2rem' }}>
+        {link && !loading && (
+          <details open style={{ marginTop: '2rem', animation: 'fadeIn 0.5s ease-in-out' }}>
             <summary>File uploaded successfully!</summary>
             <p>
               <strong>Secure Link:</strong><br />

@@ -14,6 +14,7 @@ function App() {
     // Get theme from localStorage or default to 'dark'
     return localStorage.getItem('theme') || 'dark';
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Set theme attribute and save to localStorage
@@ -29,20 +30,28 @@ function App() {
   async function handleUpload() {
     if (!file) return alert('Please select a file.');
 
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const key = crypto.getRandomValues(new Uint8Array(16));
-    const cryptoKey = await crypto.subtle.importKey('raw', key, 'AES-GCM', false, ['encrypt']);
+    try {
+      setLoading(true); // Show animation
 
-    const fileBuffer = await file.arrayBuffer();
-    const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, fileBuffer);
-    const blob = new Blob([iv, new Uint8Array(encrypted)]);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = crypto.getRandomValues(new Uint8Array(16));
+      const cryptoKey = await crypto.subtle.importKey('raw', key, 'AES-GCM', false, ['encrypt']);
 
-    const form = new FormData();
-    form.append('file', blob, file.name);
+      const fileBuffer = await file.arrayBuffer();
+      const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, cryptoKey, fileBuffer);
+      const blob = new Blob([iv, new Uint8Array(encrypted)]);
 
-    const res = await axios.post(`${process.env.REACT_APP_SERVER}/upload`, form);
-    const keyB64 = btoa(String.fromCharCode(...key));
-    setLink(`${process.env.REACT_APP_SERVER}/download/${res.data.id}#${keyB64}`);
+      const form = new FormData();
+      form.append('file', blob, file.name);
+
+      const res = await axios.post(`${process.env.REACT_APP_SERVER}/upload`, form);
+      const keyB64 = btoa(String.fromCharCode(...key));
+      setLink(`${process.env.REACT_APP_CLIENT}/download/${res.data.id}#${keyB64}`);
+    } catch (err) {
+      alert('Upload failed. Try again.');
+    } finally {
+      setLoading(false); // Hide animation
+    }
   }
 
   return (
@@ -70,7 +79,7 @@ function App() {
 
       <div style={{ flex: 1 }}>
         <HeroSection />
-        <UploadSection file={file} setFile={setFile} handleUpload={handleUpload} link={link} />
+        <UploadSection file={file} setFile={setFile} handleUpload={handleUpload} link={link} loading={loading} />
         <AboutSection />
       </div>
 
